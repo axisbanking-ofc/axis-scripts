@@ -3,63 +3,67 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Fingerprint Example</title>
+		<title>Minimalist Checkout</title>
+		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint-script.js"></script>
 	</head>
-	<body>
-		<h1>Hello, World!</h1>
+	<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+		<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
+			<h1 class="text-2xl font-bold text-center mb-4">Finalizar Compra</h1>
 
-		<button id="sendFingerprint">Enviar Fingerprint para API</button>
+			<div class="mb-4 text-center">
+				<img src="https://placehold.co/600x400/png" alt="Produto" class="mx-auto rounded-md mb-2" />
+				<h2 class="text-xl font-semibold">Fone de Ouvido Bluetooth</h2>
+				<p class="text-lg text-gray-700">R$ 199,90</p>
+			</div>
+
+			<button
+				id="checkoutButton"
+				class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+			>
+				Comprar Agora
+			</button>
+
+			<p id="statusMessage" class="mt-4 text-center text-sm text-gray-600"></p>
+		</div>
 
 		<script>
-			// Função para enviar o fingerprint para a API da Axis
-			function sendFingerprintToAPI() {
-				try {
-					// Verifica se o fingerprint foi inicializado corretamente
-					if (typeof window.getFingerprintSession === "function") {
-						const fingerprintData = window.getFingerprintSession();
+			document.getElementById("checkoutButton").addEventListener("click", function () {
+				const productName = "Fone de Ouvido Bluetooth";
+				const productPrice = 199.9;
 
-						console.log("Dados do Fingerprint:", fingerprintData); // Apenas para debug
+				if (typeof window.getFingerprintSession === "function") {
+					const fingerprintData = window.getFingerprintSession();
 
-						// Envia os dados para a API da Axis
-						fetch("https://api.axisbanking.com/collect-fingerprint", {
-							// Substitua com o endpoint real
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: "Bearer SEU_TOKEN_API", // Se a API exigir autenticação
-							},
-							body: JSON.stringify({
-								merchantId: "manhattan_br",
-								sessionId: fingerprintData.sessionId,
-								timestamp: fingerprintData.timestamp,
-							}),
+					fetch("https://meubackend.com/api/purchase", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							product: productName,
+							price: productPrice,
+							fingerprint: fingerprintData.sessionId,
+							timestamp: fingerprintData.timestamp,
+						}),
+					})
+						.then((response) => {
+							if (!response.ok) {
+								throw new Error("Falha na compra.");
+							}
+							return response.json();
 						})
-							.then((response) => {
-								if (!response.ok) {
-									throw new Error("Falha ao enviar o fingerprint.");
-								}
-								return response.json();
-							})
-							.then((data) => {
-								console.log("Resposta da API:", data);
-								alert("Fingerprint enviado com sucesso!");
-							})
-							.catch((error) => {
-								console.error("Erro ao enviar fingerprint:", error);
-								alert("Erro ao enviar o fingerprint.");
-							});
-					} else {
-						console.warn("Fingerprint ainda não está disponível.");
-						alert("Fingerprint ainda não está disponível. Tente novamente.");
-					}
-				} catch (error) {
-					console.error("Erro inesperado:", error);
+						.then((data) => {
+							document.getElementById("statusMessage").textContent = "Compra realizada com sucesso!";
+						})
+						.catch((error) => {
+							console.error("Erro na compra:", error);
+							document.getElementById("statusMessage").textContent = "Erro ao processar a compra.";
+						});
+				} else {
+					alert("Fingerprint ainda não disponível. Tente novamente.");
 				}
-			}
-
-			// Evento de clique no botão
-			document.getElementById("sendFingerprint").addEventListener("click", sendFingerprintToAPI);
+			});
 		</script>
 	</body>
 </html>
