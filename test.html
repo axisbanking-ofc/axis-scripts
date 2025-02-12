@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Fingerprint Session</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint.js"></script>
+	</head>
+	<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+		<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-sm text-center">
+			<h1 class="text-2xl font-bold mb-4">Fingerprint Session</h1>
+			<button
+				id="getFingerprint"
+				class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+			>
+				Obter Fingerprint
+			</button>
+			<div id="fingerprintData" class="mt-4 text-gray-700 text-sm"></div>
+		</div>
+
+		<script>
+			document.getElementById("getFingerprint").addEventListener("click", function () {
+				if (typeof window.getFingerprintSession === "function") {
+					const fingerprintData = window.getFingerprintSession();
+
+					if (fingerprintData) {
+						document.getElementById("fingerprintData").innerHTML = `
+                        <p><strong>Session ID:</strong> ${fingerprintData.sessionId}</p>
+                        <p><strong>Timestamp:</strong> ${fingerprintData.timestamp}</p>
+                    `;
+					} else {
+						document.getElementById("fingerprintData").textContent = "Fingerprint não disponível.";
+					}
+				} else {
+					alert("Fingerprint ainda não disponível. Tente novamente.");
+				}
+			});
+		</script>
+	</body>
+</html>
