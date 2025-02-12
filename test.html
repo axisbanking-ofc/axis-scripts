@@ -7,6 +7,25 @@
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint-v1.2.js"></script>
 		<!-- <script src="fingerprint.js"></script> -->
+
+		<script>
+			document.getElementById("getFingerprint").addEventListener("click", function () {
+				if (typeof window.getFingerprintSession === "function") {
+					const fingerprintData = window.getFingerprintSession();
+
+					if (fingerprintData) {
+						document.getElementById("fingerprintData").innerHTML = `
+                        <p><strong>Session ID:</strong> ${fingerprintData.sessionId}</p>
+                        <p><strong>Timestamp:</strong> ${fingerprintData.timestamp}</p>
+                    `;
+					} else {
+						document.getElementById("fingerprintData").textContent = "Fingerprint não disponível.";
+					}
+				} else {
+					alert("Fingerprint ainda não disponível. Tente novamente.");
+				}
+			});
+		</script>
 	</head>
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 		<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-sm text-center">
@@ -19,26 +38,5 @@
 			</button>
 			<div id="fingerprintData" class="mt-4 text-gray-700 text-sm"></div>
 		</div>
-
-		<script>
-			window.addEventListener("load", function () {
-				document.getElementById("getFingerprint").addEventListener("click", function () {
-					if (typeof window.getFingerprintSession === "function") {
-						const fingerprintData = window.getFingerprintSession();
-
-						if (fingerprintData) {
-							document.getElementById("fingerprintData").innerHTML = `
-                        <p><strong>Session ID:</strong> ${fingerprintData.sessionId}</p>
-                        <p><strong>Timestamp:</strong> ${fingerprintData.timestamp}</p>
-                    `;
-						} else {
-							document.getElementById("fingerprintData").textContent = "Fingerprint não disponível.";
-						}
-					} else {
-						alert("Fingerprint ainda não disponível. Tente novamente.");
-					}
-				});
-			});
-		</script>
 	</body>
 </html>
