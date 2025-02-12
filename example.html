@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Minimalist Checkout</title>
 		<script src="https://cdn.tailwindcss.com"></script>
-		<script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint.js?ver=1.1"></script>
+		<script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint.js?ver=1.2"></script>
 	</head>
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 		<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
@@ -28,41 +28,43 @@
 		</div>
 
 		<script>
-			document.getElementById("checkoutButton").addEventListener("click", function () {
-				const productName = "Fone de Ouvido Bluetooth";
-				const productPrice = 199.9;
+			window.addEventListener("load", function () {
+				document.getElementById("checkoutButton").addEventListener("click", function () {
+					const productName = "Fone de Ouvido Bluetooth";
+					const productPrice = 199.9;
 
-				if (typeof window.getFingerprintSession === "function") {
-					const fingerprintData = window.getFingerprintSession();
+					if (typeof window.getFingerprintSession === "function") {
+						const fingerprintData = window.getFingerprintSession();
 
-					fetch("https://meubackend.com/api/purchase", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({
-							product: productName,
-							price: productPrice,
-							fingerprint: fingerprintData.sessionId,
-							timestamp: fingerprintData.timestamp,
-						}),
-					})
-						.then((response) => {
-							if (!response.ok) {
-								throw new Error("Falha na compra.");
-							}
-							return response.json();
+						fetch("https://meubackend.com/api/purchase", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								product: productName,
+								price: productPrice,
+								fingerprint: fingerprintData.sessionId,
+								timestamp: fingerprintData.timestamp,
+							}),
 						})
-						.then((data) => {
-							document.getElementById("statusMessage").textContent = "Compra realizada com sucesso!";
-						})
-						.catch((error) => {
-							console.error("Erro na compra:", error);
-							document.getElementById("statusMessage").textContent = "Erro ao processar a compra.";
-						});
-				} else {
-					alert("Fingerprint ainda não disponível. Tente novamente.");
-				}
+							.then((response) => {
+								if (!response.ok) {
+									throw new Error("Falha na compra.");
+								}
+								return response.json();
+							})
+							.then((data) => {
+								document.getElementById("statusMessage").textContent = "Compra realizada com sucesso!";
+							})
+							.catch((error) => {
+								console.error("Erro na compra:", error);
+								document.getElementById("statusMessage").textContent = "Erro ao processar a compra.";
+							});
+					} else {
+						alert("Fingerprint ainda não disponível. Tente novamente.");
+					}
+				});
 			});
 		</script>
 	</body>

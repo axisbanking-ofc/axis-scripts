@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Fingerprint Session</title>
 		<script src="https://cdn.tailwindcss.com"></script>
-		<script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint.js?ver=1.1"></script>
+		<script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint.js?ver=1.2"></script>
 	</head>
 	<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 		<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-sm text-center">
@@ -20,21 +20,23 @@
 		</div>
 
 		<script>
-			document.getElementById("getFingerprint").addEventListener("click", function () {
-				if (typeof window.getFingerprintSession === "function") {
-					const fingerprintData = window.getFingerprintSession();
+			window.addEventListener("load", function () {
+				document.getElementById("getFingerprint").addEventListener("click", function () {
+					if (typeof window.getFingerprintSession === "function") {
+						const fingerprintData = window.getFingerprintSession();
 
-					if (fingerprintData) {
-						document.getElementById("fingerprintData").innerHTML = `
+						if (fingerprintData) {
+							document.getElementById("fingerprintData").innerHTML = `
                         <p><strong>Session ID:</strong> ${fingerprintData.sessionId}</p>
                         <p><strong>Timestamp:</strong> ${fingerprintData.timestamp}</p>
                     `;
+						} else {
+							document.getElementById("fingerprintData").textContent = "Fingerprint não disponível.";
+						}
 					} else {
-						document.getElementById("fingerprintData").textContent = "Fingerprint não disponível.";
+						alert("Fingerprint ainda não disponível. Tente novamente.");
 					}
-				} else {
-					alert("Fingerprint ainda não disponível. Tente novamente.");
-				}
+				});
 			});
 		</script>
 	</body>
