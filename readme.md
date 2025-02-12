@@ -15,7 +15,7 @@ Este projeto utiliza o `fingerprint.js` para coletar e exibir um identificador d
 2. **Incluir o Script no HTML**
    - Certifique-se de incluir a seguinte linha no `<head>` do seu documento HTML:
      ```html
-     <script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint.js"></script>
+     <script src="https://cdn.jsdelivr.net/gh/axisbanking-ofc/axis-scripts/fingerprint.js?ver=1.0"></script>
      ```
 
 3. **Interagir com a Página**
